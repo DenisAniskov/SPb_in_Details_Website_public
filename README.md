@@ -101,6 +101,21 @@ npm run verify:metadata -- --github --apk ./release-artifacts/SPb_in_Details_1.1
 Ни одну из этих проверок не следует отключать, чтобы сборка «прошла»: они
 защищают опубликованные сведения о релизе и происхождение изображений.
 
+### Автоматические проверки GitHub Actions
+
+Workflow [`.github/workflows/public-website-ci.yml`](.github/workflows/public-website-ci.yml)
+проверяет Pull Request в `main`, каждый push в `main` и ручные запуски.
+На Node.js 24 с `npm ci` он выполняет `npm run check`, офлайн-проверку MIT и
+публичных метаданных (`node scripts/verify-publication-metadata.mjs`),
+`npm run verify:metadata -- --github` (сверка с настоящим GitHub Release)
+и `npm run build` с постсборочными проверками.
+
+CI работает только с публичными файлами и GitHub Release: без приватных
+ключей, локального APK, пользовательских секретов или доступа к dev.
+`GITHUB_TOKEN` имеет только `contents: read`; у checkout отключено сохранение
+учётных данных. CI **не публикует APK и не разворачивает сайт на Vercel**.
+Публикация исходников и production-сайта остаются отдельными процессами.
+
 ## Данные о релизе
 
 Все сведения о версии, ссылках, размере и контрольной сумме берутся из трёх
