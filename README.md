@@ -248,6 +248,7 @@ docs/             BRAND_ASSETS.md (происхождение ресурсов),
 
 - [docs/DESIGN.md](docs/DESIGN.md) — палитра, типографика, движение и доступность.
 - [docs/BRAND_ASSETS.md](docs/BRAND_ASSETS.md) — происхождение ресурсов и их контрольные суммы.
+- [docs/PUBLICATION_SYNC.md](docs/PUBLICATION_SYNC.md) — порядок безопасной публикации изменений исходников без приватной истории.
 
 ## Авторские права и лицензия
 
