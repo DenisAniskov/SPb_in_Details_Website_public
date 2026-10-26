@@ -1,0 +1,109 @@
+---
+import Icon from './Icon.astro';
+import { release, project } from '../lib/site';
+import { docUrl } from '../lib/release';
+
+const docLinks = [
+  { href: docUrl(release, 'licensing'), label: 'Лицензии и авторские права' },
+  { href: docUrl(release, 'thirdPartyAttributions'), label: 'Сторонние источники и атрибуции' },
+  { href: docUrl(release, 'knownLimitations'), label: 'Известные ограничения' },
+  { href: docUrl(release, 'configuration'), label: 'Конфигурация клиента' },
+];
+---
+
+<section class="section" id="about">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">О проекте</p>
+      <h2 class="balance">Город, который видно по дороге</h2>
+    </div>
+
+    <div class="grid grid--two">
+      <div class="stack">
+        {project.idea.map((paragraph) => <p class="lead">{paragraph}</p>)}
+        <div class="author-card">
+          <span class="author-card__mark" aria-hidden="true">ДА</span>
+          <div>
+            <p>
+              <strong>{project.author.name}</strong>
+            </p>
+            <p class="small muted">
+              {project.author.role}. {project.author.creditLine} — строка авторства в приложении.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card">
+          <h3>Что важно знать</h3>
+          <ul class="checklist">
+            <li>
+              <Icon name="alert" size={17} />
+              <span>Нужен интернет: офлайн-карт нет.</span>
+            </li>
+            <li>
+              <Icon name="alert" size={17} />
+              <span>Приложение — для пеших прогулок: маршруты общественного транспорта оно не прокладывает.</span>
+            </li>
+            <li>
+              <Icon name="alert" size={17} />
+              <span>Ответы ИИ-помощника могут содержать ошибки, сам помощник бывает недоступен.</span>
+            </li>
+            <li>
+              <Icon name="alert" size={17} />
+              <span>Не полагайтесь на приложение в вопросах безопасности маршрута: оно не заменяет здравый смысл.</span>
+            </li>
+          </ul>
+          <details class="disclosure">
+            <summary>Полный список ограничений</summary>
+            <ul class="checklist">
+              {
+                project.limitations.map((limitation) => (
+                  <li>
+                    <Icon name="alert" size={17} />
+                    <span>{limitation}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </details>
+        </div>
+
+        <details class="disclosure">
+          <summary>Технические подробности</summary>
+          <div class="table-wrap">
+            <table class="tech">
+              <tbody>
+                {
+                  project.technology.map((row) => (
+                    <tr>
+                      <th scope="row">{row.layer}</th>
+                      <td>{row.value}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </details>
+
+        <details class="disclosure">
+          <summary>Документация приложения</summary>
+          <ul>
+            {
+              docLinks.map((link) => (
+                <li>
+                  <a class="link-inline" href={link.href} rel="noopener noreferrer">
+                    {link.label}
+                    <Icon name="external" size={14} />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>

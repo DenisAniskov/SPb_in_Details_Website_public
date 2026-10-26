@@ -1,0 +1,10 @@
+# Text files are stored with LF endings in the repository.
+* text=auto eol=lf
+
+# Binary assets are never converted.
+*.png binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.svg text eol=lf

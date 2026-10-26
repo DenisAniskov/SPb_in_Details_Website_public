@@ -1,0 +1,95 @@
+---
+import Icon from './Icon.astro';
+import { release } from '../lib/site';
+import { formatFingerprint } from '../lib/release';
+
+const checks = [
+  {
+    icon: 'shield',
+    text: 'Каждая версия подписана одним и тем же сертификатом разработчика, поэтому официальные обновления устанавливаются поверх прежней версии, не теряя избранное и настройки.',
+  },
+  {
+    icon: 'external',
+    text: 'Файл распространяется только через официальный GitHub Release приложения. Сайт не хранит сборку и не меняет её содержимое — кнопка ведёт прямо к файлу.',
+  },
+  {
+    icon: 'alert',
+    text: 'Запрос Android на «установку из выбранного источника» — ожидаемое поведение для приложений не из Google Play. Защитные механизмы системы отключать не нужно.',
+  },
+];
+
+const certificate = [
+  { label: 'Схема подписи', value: release.apk.signingSchemes.join(', ') },
+  {
+    label: 'Ключ',
+    value: `${release.signature.keyAlgorithm}, ${release.signature.certificateAlgorithm}`,
+  },
+  { label: 'Владелец сертификата', value: release.signature.certificateSubject },
+  { label: 'Действителен до', value: release.signature.certificateValidUntil },
+  { label: 'Выравнивание APK', value: release.apk.alignment },
+];
+---
+
+<section class="section" id="security">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">Доверие</p>
+      <h2 class="balance">Откуда файл и как проверить его подлинность</h2>
+      <p class="lead">
+        Приложение не публикуется в Google Play, поэтому здесь честно рассказано, откуда берётся
+        файл и как проверить его самостоятельно.
+      </p>
+    </div>
+
+    <div class="grid grid--two">
+      <ul class="checklist">
+        {
+          checks.map((check) => (
+            <li>
+              <Icon name={check.icon} size={18} />
+              <span>{check.text}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="card">
+        <h3>Сертификат подписи</h3>
+        <dl class="spec">
+          {
+            certificate.map((row) => (
+              <div class="spec__row">
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))
+          }
+          <div class="spec__row">
+            <dt>Отпечаток SHA-256</dt>
+            <dd>
+              <code class="code-block select-all">
+                {formatFingerprint(release.signature.certificateSha256)}
+              </code>
+            </dd>
+          </div>
+        </dl>
+        <p class="small muted">
+          Отпечаток можно сверить командой
+          <code>apksigner verify --print-certs</code> или
+          <code>keytool -printcert -jarfile</code>. Совпадение подтверждает, что файл подписан тем
+          же ключом, что и предыдущие версии.
+        </p>
+      </div>
+    </div>
+
+    <div class="notice">
+      <Icon name="alert" size={20} />
+      <p>
+        <strong>Без ложных гарантий.</strong> Сайт не заявляет, что приложение проверено Google Play
+        Protect или опубликовано в Google Play. Ключ карты в сборке — клиентский: его можно извлечь
+        из APK, поэтому защита опирается на ограничения ключа на стороне Яндекса, а не на
+        обфускацию. Скачивайте файл только по ссылке на этой странице или из релиза на GitHub.
+      </p>
+    </div>
+  </div>
+</section>

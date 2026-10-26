@@ -1,0 +1,77 @@
+---
+import Icon from './Icon.astro';
+import ThemeSwitcher from './ThemeSwitcher.astro';
+import { release } from '../lib/site';
+
+const pathname = Astro.url.pathname;
+// On subpages the section links point back to the anchors on the home page.
+const home = pathname === '/' || pathname === '' ? '' : '/';
+
+const navItems = [
+  { href: `${home}#features`, label: 'Возможности' },
+  { href: `${home}#screens`, label: 'Интерфейс' },
+  { href: `${home}#download`, label: 'Скачать' },
+  { href: `${home}#security`, label: 'Установка' },
+  { href: `${home}#about`, label: 'О проекте' },
+];
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href={home || '/'}>
+      <img src="/brand/app-icon-128.png" width="36" height="36" alt="" decoding="async" />
+      <span class="brand__text">
+        <span class="brand__name">{release.appName}</span>
+        <span class="brand__version">Версия {release.version}</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Разделы страницы">
+      <ul class="site-nav__list">
+        {
+          navItems.map((item) => (
+            <li>
+              <a class="site-nav__link" href={item.href}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <ThemeSwitcher />
+
+    <a class="btn btn--primary site-header__cta" href={release.urls.apkDownload}>
+      Скачать APK
+    </a>
+
+    <details class="nav-toggle">
+      <summary>
+        Меню
+        <Icon name="chevron" size={16} />
+      </summary>
+      <div class="nav-toggle__panel">
+        <ul>
+          {
+            navItems.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+          <li>
+            <a href={release.urls.apkDownload}>Скачать APK</a>
+          </li>
+          <li class="nav-toggle__theme">
+            <span class="nav-toggle__caption" aria-hidden="true">Оформление</span>
+            <ThemeSwitcher variant="full" />
+          </li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</header>
+
+<!-- External file on purpose: no inline script, so the CSP can stay strict. -->
+<script is:inline src="/menu.js" defer></script>

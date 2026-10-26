@@ -1,0 +1,138 @@
+---
+import Icon from './Icon.astro';
+import { release } from '../lib/site';
+import { docUrl, formatBytes, formatExactBytes } from '../lib/release';
+
+const specs = [
+  { label: 'Версия', value: `${release.version} (сборка ${release.build})` },
+  {
+    label: 'Платформа',
+    value: `Android ${release.platform.minVersion} и выше (API ${release.platform.minApiLevel}+)`,
+  },
+  {
+    label: 'Размер',
+    value: `${formatBytes(release.apk.sizeBytes)} · ${formatExactBytes(release.apk.sizeBytes)}`,
+  },
+  { label: 'Файл', value: release.apk.fileName },
+  { label: 'Архитектуры', value: release.apk.architectures.join(', ') },
+  { label: 'Пакет', value: release.packageName },
+  { label: 'Схемы подписи', value: release.apk.signingSchemes.join(', ') },
+  { label: 'Регистрация', value: 'Не требуется' },
+];
+
+const facts = [
+  'Бесплатно, без рекламы и покупок',
+  'Без регистрации и аккаунта',
+  `Работает на Android ${release.platform.minVersion} и новее`,
+];
+---
+
+<section class="section" id="download">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">Загрузка</p>
+      <h2 class="balance">Скачать приложение</h2>
+      <p class="lead">
+        Официальный файл публикуется в релизах приложения на GitHub — так приложение
+        распространяется вместо Google Play. Кнопка ведёт прямо к файлу.
+      </p>
+    </div>
+
+    <div class="download-card">
+      <div class="stack">
+        <h3>{release.appName} {release.version}</h3>
+        <ul class="download-card__meta">
+          {
+            facts.map((fact) => (
+              <li>
+                <Icon name="check" size={18} />
+                <span>{fact}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="btn btn--primary btn--large btn--block" href={release.urls.apkDownload}>
+          <Icon name="download" size={20} />
+          Скачать приложение
+        </a>
+        <p class="small">
+          <a class="link-inline" href={release.urls.release} rel="noopener noreferrer">
+            Страница релиза {release.gitTag} на GitHub
+            <Icon name="external" size={15} />
+          </a>
+        </p>
+
+        <div class="install">
+          <h3>Как установить приложение</h3>
+          <ol class="steps">
+            <li><strong>Нажмите «Скачать приложение»</strong> — файл сохранится в загрузки.</li>
+            <li><strong>Откройте скачанный файл</strong> на телефоне Android.</li>
+            <li>
+              <strong>Если Android попросит</strong> — разрешите установку из выбранного источника
+              («Установка неизвестных приложений»). Это стандартный запрос для приложений не из
+              Google Play; защитные механизмы Android отключать не нужно.
+            </li>
+            <li><strong>Подтвердите установку.</strong> Готово!</li>
+          </ol>
+          <p class="small muted">
+            Установленное официальное обновление ставится поверх прежней версии: избранное и
+            настройки сохраняются. Если раньше была установлена тестовая (debug) сборка — у неё
+            другая подпись, обновление поверх не встанет: приложение придётся удалить, а вместе с
+            ним и локальные данные.
+          </p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <details class="disclosure">
+          <summary>Проверка файла и технические сведения</summary>
+          <dl class="spec">
+            {
+              specs.map((spec) => (
+                <div class="spec__row">
+                  <dt>{spec.label}</dt>
+                  <dd>{spec.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          <h4>Контрольная сумма SHA-256</h4>
+          <p>
+            Скачанный файл можно сверить по этой сумме. Её можно выделить целиком или скопировать
+            кнопкой:
+          </p>
+          <div class="copy-row">
+            <code class="code-block select-all" id="apk-sha256">{release.apk.sha256}</code>
+            <!--
+              Shown by /ui.js: without JavaScript the button could not copy
+              anything, and the checksum above is already selectable by hand.
+            -->
+            <button
+              type="button"
+              class="btn btn--secondary copy-row__button"
+              data-copy-source="#apk-sha256"
+              hidden
+            >
+              <Icon name="copy" size={16} />
+              Скопировать
+            </button>
+            <span class="copy-row__status" role="status" data-copy-status></span>
+          </div>
+          <p class="tiny">
+            Linux и macOS: <code>sha256sum {release.apk.fileName}</code> — Windows:
+            <code>certutil -hashfile {release.apk.fileName} SHA256</code>. Значение должно совпасть
+            с указанным выше.
+          </p>
+          <p class="tiny">
+            Подпись проверяется командой
+            <code>apksigner verify --print-certs {release.apk.fileName}</code>. Пошаговые
+            инструкции — <a href={docUrl(release, 'building')} rel="noopener noreferrer">в документации</a>.
+            Точный адрес файла:
+            <code class="code-block select-all">{release.urls.apkDownload}</code>
+          </p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>

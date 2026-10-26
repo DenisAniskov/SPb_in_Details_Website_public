@@ -1,0 +1,76 @@
+---
+/**
+ * Everything that belongs in <head>: SEO, Open Graph, favicons and the
+ * canonical URL. The canonical origin comes from `site` in astro.config.mjs,
+ * so previews and production builds never disagree about it.
+ *
+ * Static pages are built as `<route>/index.html`, which is why the canonical
+ * form carries a trailing slash — the same form the generated sitemap uses.
+ */
+import { release, project } from '../lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Keeps a page out of the index (the 404 page). */
+  noindex?: boolean;
+}
+
+const { title, description, noindex = false } = Astro.props;
+const origin = Astro.site ?? Astro.url.origin;
+
+const path = Astro.url.pathname;
+const canonicalPath = path.endsWith('/') ? path : `${path}/`;
+const canonical = new URL(canonicalPath, origin);
+const ogImage = new URL('/og-image.png', origin);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical.href} />
+<meta name="author" content={project.author.name} />
+<!--
+  Both theme colours are declared with a media query, so the browser UI matches
+  the system preference without JavaScript. `/theme.js` rewrites them as soon as
+  a visitor picks a theme by hand.
+-->
+<meta name="theme-color" content="#000a2e" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
+<meta name="color-scheme" content="dark light" />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
+
+<!--
+  Loaded without `defer` on purpose: the theme has to be on <html> before the
+  first paint, or a visitor who chose light on a dark system would see the dark
+  theme flash for a frame. The file is tiny, same-origin, and cached; the strict
+  Content-Security-Policy leaves no other way to run code this early.
+-->
+<script is:inline src="/theme.js"></script>
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={release.appName} />
+<meta property="og:locale" content="ru_RU" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical.href} />
+<meta property="og:image" content={ogImage.href} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${release.appName}: ${release.slogan}`} />
+
+<!-- Twitter/X uses the same card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage.href} />
+
+<!-- Icons derived from the approved application icon -->
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+<link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />

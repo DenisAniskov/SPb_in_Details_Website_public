@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Features from '../components/Features.astro';
+import Showcase from '../components/Showcase.astro';
+import DownloadSection from '../components/DownloadSection.astro';
+import SecuritySection from '../components/SecuritySection.astro';
+import Faq from '../components/Faq.astro';
+import AboutSection from '../components/AboutSection.astro';
+import { release, project } from '../lib/site';
+
+const title = `${release.appName} — приложение для прогулок по Санкт-Петербургу`;
+const description =
+  `${project.description} Скачать APK ${release.gitTag} для Android ${release.platform.minVersion}+ ` +
+  'из официального GitHub Release приложения.';
+---
+
+<BaseLayout title={title} description={description}>
+  <Hero />
+  <Showcase />
+  <Features />
+  <DownloadSection />
+  <SecuritySection />
+  <Faq />
+  <AboutSection />
+</BaseLayout>

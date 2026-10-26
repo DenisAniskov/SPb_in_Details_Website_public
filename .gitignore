@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Astro build output
+dist/
+.astro/
+
+# Python bytecode from tools/generate_web_assets.py
+__pycache__/
+*.py[cod]
+
+# Vercel
+.vercel/
+
+# Environment files (this project needs none, but keep them out of Git)
+.env
+.env.*
+!.env.example
+
+# Editor and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+npm-debug.log*
+.eslintcache

@@ -1,0 +1,201 @@
+---
+/**
+ * "How the app looks" section.
+ *
+ * A slot renders a screenshot only when `screens.json` states how it was
+ * captured *and* the file is a readable portrait image — `resolveScreens`
+ * enforces both and stops the build on anything else. Until then the slot
+ * explains the screen in words. Test renders are never shown as screenshots.
+ *
+ * A published screenshot is a real link to the full-size file: without
+ * JavaScript it opens in a new tab, and `/ui.js` turns the same click into an
+ * in-page dialog.
+ */
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import Icon from './Icon.astro';
+import { release, screens } from '../lib/site';
+import { docUrl } from '../lib/release';
+import { captureNote, isPublishable, resolveScreens, type ResolvedScreen } from '../lib/screens';
+import { readImageSize } from '../lib/image-size';
+
+// `import.meta.url` is rewritten by the bundler during `astro build` and points
+// into dist/.prerender/, so the public directory is resolved from the project
+// root — and verified, because a wrong path here would silently turn every slot
+// back into a placeholder instead of failing.
+const publicDir = join(process.cwd(), 'public');
+if (!existsSync(join(publicDir, 'brand', 'app-icon-128.png'))) {
+  throw new Error(
+    `Не найден каталог public/ проекта (${publicDir}): раздел «Как выглядит приложение» ` +
+      'не может проверить файлы скриншотов. Сборку нужно запускать из корня проекта.',
+  );
+}
+
+const slots = resolveScreens(screens, publicDir, release.version);
+
+const published = slots.filter((slot) => slot.state === 'published');
+const missing = slots.length - published.length;
+
+// All five screens were captured in one session, so the capture details are
+// printed once under the grid instead of repeating the same line five times.
+// Should a slot ever come from a different device, each figure keeps its own.
+const first = published[0];
+const sharedCapture =
+  first !== undefined &&
+  published.every(
+    (slot) =>
+      slot.provenance === first.provenance &&
+      JSON.stringify(slot.capture) === JSON.stringify(first.capture),
+  );
+const summary =
+  sharedCapture && first !== undefined && first.capture !== null && isPublishable(first.provenance)
+    ? first.archived
+      ? `${captureNote(first.provenance, first.capture)} Это архивные снимки версии ${first.capture.appVersion} (сборка ${first.capture.build}): они не являются снимками текущей версии ${release.version}.`
+      : captureNote(first.provenance, first.capture)
+    : null;
+
+function noteFor(slot: ResolvedScreen): string | null {
+  return sharedCapture ? null : slot.note;
+}
+
+// Sizes are read from the files, not written by hand: a hardcoded height that
+// drifts from the real image shifts the layout when it loads.
+const assetFiles = [
+  {
+    src: '/brand/launcher-light-256.webp',
+    alt: 'Иконка приложения на светлых обоях: скруглённый квадрат с синим градиентом и золотым знаком',
+    caption: 'Отрисовка иконки на светлых обоях из ресурсов приложения.',
+  },
+  {
+    src: '/brand/launcher-dark-256.webp',
+    alt: 'Иконка приложения на тёмных обоях: скруглённый квадрат с синим градиентом и золотым знаком',
+    caption: 'Отрисовка иконки на тёмных обоях из ресурсов приложения.',
+  },
+  {
+    src: '/brand/icon-set-1000.webp',
+    alt: 'Набор вариантов иконки приложения: обычная, круглая, adaptive и монохромная версии',
+    caption: 'Варианты иконки: обычная, круглая, adaptive и тематическая монохромная маска.',
+  },
+];
+
+const assets = assetFiles.map((asset) => {
+  const size = readImageSize(readFileSync(join(publicDir, asset.src.replace(/^\//, ''))));
+  if (size === null) {
+    throw new Error(`Не удалось прочитать размеры изображения ${asset.src}: неизвестный формат.`);
+  }
+  return { ...asset, width: size.width, height: size.height };
+});
+---
+
+<section class="section" id="screens">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">Интерфейс</p>
+      <h2 class="balance">Посмотрите, как выглядит приложение</h2>
+      <p class="lead">{screens.policy}</p>
+    </div>
+
+    <div class="grid grid--screens">
+      {
+        slots.map((slot) => (
+          <figure class="screen">
+            {slot.state === 'published' && slot.size !== null ? (
+              <a
+                class="screen__shot"
+                href={slot.image}
+                target="_blank"
+                rel="noopener"
+                data-lightbox-open
+                data-lightbox-title={slot.title}
+              >
+                <span class="visually-hidden">Открыть увеличенный скриншот: </span>
+                <img
+                  src={slot.image}
+                  alt={slot.alt}
+                  width={slot.size.width}
+                  height={slot.size.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="screen__zoom" aria-hidden="true">
+                  <Icon name="expand" size={16} />
+                </span>
+              </a>
+            ) : (
+              <div class="screen__frame">
+                <p class="screen__pending">
+                  <Icon name="image" size={26} />
+                  <span>Официальный скриншот готовится</span>
+                </p>
+              </div>
+            )}
+            <figcaption class="screen__caption">
+              <strong>{slot.title}</strong>
+              <br />
+              {slot.description}
+              {noteFor(slot) !== null && <span class="screen__provenance">{noteFor(slot)}</span>}
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    {summary !== null && <p class="showcase__provenance">{summary}</p>}
+
+    {
+      missing > 0 && (
+        <div class="notice">
+          <Icon name="alert" size={20} />
+          <p>
+            <strong>Почему без снимков.</strong> В версии {release.version} раздел показывает
+            изображение только тогда, когда известно, на каком устройстве и в какой сборке сделан
+            снимок: файл без подтверждённого происхождения на сайте не появляется, а отрисовки из
+            тестов за скриншоты не выдаются. Пока снимков нет, каждый экран описан словами — это
+            честнее, чем нарисованный макет.
+          </p>
+        </div>
+      )
+    }
+
+    <h3 class="showcase__subhead">Оформление и иконка</h3>
+    <p class="muted small">
+      Иконка утверждена автором и не перерисовывается. Изображения ниже — ресурсы и превью из
+      репозитория приложения, а не снимки экрана устройства; подробности и проверки — в
+      документации <a href={docUrl(release, 'branding')} rel="noopener noreferrer">«Бренд и
+      иконка»</a>.
+    </p>
+
+    <div class="assets-row">
+      {
+        assets.map((asset) => (
+          <figure class="asset">
+            <img
+              src={asset.src}
+              alt={asset.alt}
+              width={asset.width}
+              height={asset.height}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption class="asset__caption">{asset.caption}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+
+  {
+    published.length > 0 && (
+      <dialog class="lightbox" data-lightbox aria-label="Увеличенный скриншот приложения">
+        <div class="lightbox__inner">
+          <button type="button" class="lightbox__close" data-lightbox-close>
+            <Icon name="close" size={20} />
+            <span class="visually-hidden">Закрыть увеличенный скриншот</span>
+          </button>
+          <img class="lightbox__image" data-lightbox-image alt="" decoding="async" />
+          <p class="lightbox__caption" data-lightbox-caption />
+        </div>
+      </dialog>
+    )
+  }
+</section>

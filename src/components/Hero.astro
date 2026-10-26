@@ -1,0 +1,58 @@
+---
+import Icon from './Icon.astro';
+import { release } from '../lib/site';
+
+const facts = [
+  'Бесплатно',
+  `Android ${release.platform.minVersion} и выше`,
+  'Без регистрации',
+];
+---
+
+<section class="section hero">
+  <div class="container hero__layout">
+    <div class="hero__text">
+      <p class="eyebrow">Официальный сайт Android-приложения</p>
+      <h1 class="balance">{release.appName}</h1>
+      <p class="hero__slogan">Откройте город, который скрывается за привычными маршрутами</p>
+      <p class="lead">
+        Находите интересные места, планируйте прогулки и узнавайте больше о Санкт-Петербурге —
+        прямо на карте.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--large" href={release.urls.apkDownload}>
+          <Icon name="download" size={20} />
+          Скачать приложение
+        </a>
+        <a class="btn btn--secondary btn--large" href="#screens">
+          Посмотреть, как работает
+        </a>
+      </div>
+      <ul class="hero__facts">
+        {
+          facts.map((fact) => (
+            <li>
+              <Icon name="check" size={18} />
+              <span>{fact}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="small muted">Актуальная версия {release.version}</p>
+    </div>
+
+    <div class="hero__visual">
+      <div class="hero__icon-group">
+        <img
+          class="hero__icon"
+          src="/brand/app-icon-512.webp"
+          width="512"
+          height="512"
+          alt={`Иконка приложения «${release.appName}»`}
+          decoding="async"
+        />
+        <p class="hero__icon-label">Иконка приложения {release.gitTag}</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,309 @@
+---
+import Icon from '../components/Icon.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { release, project } from '../lib/site';
+import { docUrl } from '../lib/release';
+
+const title = `Лицензии и сторонние компоненты — ${release.appName}`;
+const description =
+  'Лицензия MIT на собственный код приложения, backend и официального сайта, отдельный режим ' +
+  'данных OpenStreetMap (ODbL), условия использования сервисов Яндекса, Open-Meteo, CAMS ENSEMBLE ' +
+  'и OpenRouter, авторские права на материалы сайта и обязательные атрибуции.';
+
+const APP_LICENSE_URL =
+  'https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/LICENSE';
+const BACKEND_LICENSE_URL =
+  'https://github.com/DenisAniskov/SPb_in_Details_Backend_public/blob/main/LICENSE';
+const WEBSITE_LICENSE_URL =
+  'https://github.com/DenisAniskov/SPb_in_Details_Website_public/blob/main/LICENSE';
+const WEBSITE_ASSET_RIGHTS_URL =
+  'https://github.com/DenisAniskov/SPb_in_Details_Website_public/blob/main/ASSET_RIGHTS.md';
+
+const regimes: readonly (readonly [string, string])[] = [
+  [
+    'Исходный код приложения: Flutter и Dart, Kotlin, авторские инструменты и тесты',
+    'MIT License, Copyright (c) 2026 Denis Aniskov',
+  ],
+  [
+    'Исходный код backend: серверная часть, каталог, расчётные оценки, ассистент',
+    'MIT License, Copyright (c) 2026 Denis Aniskov',
+  ],
+  [
+    'Исходный код официального сайта: Astro-компоненты, TypeScript, JavaScript, CSS, инструменты и скрипты проверок',
+    'MIT License, Copyright (c) 2026 Denis Aniskov',
+  ],
+  [
+    'Географические данные OpenStreetMap: каталог, scenic-набор, снимки дорожной сети, модель зданий',
+    'ODbL 1.0, © OpenStreetMap contributors — MIT на них не распространяется',
+  ],
+  [
+    'Редакционные материалы каталога: описания, «зачем идти», заметки, теги, оценки времени',
+    'Авторские материалы; разрешение на переиспользование вместе с каталогом сохранено',
+  ],
+  [
+    'Yandex MapKit: SDK, карта, пешеходная маршрутизация, тайлы и копирайты',
+    'Собственные условия Яндекса',
+  ],
+  [
+    'Внешние источники: Open-Meteo, CAMS ENSEMBLE, погодные модели, ответы ИИ-модели',
+    'Лицензии и условия соответствующих поставщиков',
+  ],
+  [
+    'Сторонние программные зависимости: Dart-пакеты и Android-библиотеки',
+    'Лицензии их правообладателей',
+  ],
+  [
+    'Фирменное оформление: название, слоган, иконка приложения',
+    'Отдельные права на оригинальные элементы автора; регистрация товарного знака не заявляется',
+  ],
+  [
+    'Скриншоты интерфейса, брендовые изображения, favicon и изображение предпросмотра этого сайта',
+    '© 2026 Денис Аниськов. Отдельный правовой режим; MIT-лицензия сайта на них не распространяется',
+  ],
+];
+
+const notWaived = [
+  'обязательства по данным OpenStreetMap (ODbL 1.0) и другим открытым данным;',
+  'ранее предоставленное разрешение на переиспользование редакционных материалов каталога вместе с каталогом и производными базами;',
+  'лицензии сторонних библиотек, пакетов и зависимостей;',
+  'условия использования внешних служб: Яндекса, Open-Meteo и CAMS, OpenRouter, системных служб Android;',
+  'условия использования GitHub;',
+  'права на фирменное оформление, название и знак приложения;',
+  'законные исключения из авторского права, действующие в применимой юрисдикции.',
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="page-head">
+    <div class="container">
+      <p class="eyebrow">Документы</p>
+      <h1>Лицензии и сторонние компоненты</h1>
+      <p class="lead">
+        Авторские права на приложение и сайт, правовые режимы данных, условия внешних сервисов и
+        обязательные атрибуции — в одном месте.
+      </p>
+      <p class="doc-meta">
+        <span>Относится к версии {release.version} ({release.gitTag})</span>
+        <span>
+          Первоисточники:
+          <a href={docUrl(release, 'licensing')} rel="noopener noreferrer">docs/LICENSING.md</a>,
+          {' '}
+          <a href={docUrl(release, 'thirdPartyAttributions')} rel="noopener noreferrer">
+            docs/THIRD_PARTY_ATTRIBUTIONS.md
+          </a>
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <div class="container prose">
+    <div class="notice">
+      <Icon name="document" size={20} />
+      <p>
+        <strong>Собственный исходный код приложения, backend и официального сайта распространяется
+        по MIT License, Copyright (c) 2026 Denis Aniskov.</strong> Разрешение на использование,
+        копирование, изменение и распространение кода даётся на условиях файла
+        <a href={APP_LICENSE_URL} rel="noopener noreferrer">LICENSE репозитория приложения</a>,
+        <a href={BACKEND_LICENSE_URL} rel="noopener noreferrer">LICENSE репозитория backend</a> и
+        <a href={WEBSITE_LICENSE_URL} rel="noopener noreferrer">LICENSE репозитория сайта</a>.
+        Данные OpenStreetMap, редакционные материалы каталога, сторонние библиотеки, сервисы,
+        фирменное оформление и изображения остаются в своих отдельных правовых режимах, описанных
+        ниже.
+      </p>
+    </div>
+
+    <h2>Разделение правовых режимов</h2>
+    <p>
+      Лицензия кода и лицензии данных, зависимостей и внешних служб — разные вещи, и они не
+      смешиваются.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Объект</th>
+            <th scope="col">Правовой режим</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            regimes.map(([subject, regime]) => (
+              <tr>
+                <td>{subject}</td>
+                <td>{regime}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Исходный код приложения</h2>
+    <p>
+      Flutter и Dart-код клиента, Kotlin-часть Android-проекта, авторские инструменты, тесты и
+      проектная документация распространяются по
+      <strong>MIT License</strong> (<code>Copyright (c) 2026 Denis Aniskov</code>) — полный текст
+      находится в файле <a href={APP_LICENSE_URL} rel="noopener noreferrer">LICENSE</a>{' '}
+      публичного репозитория приложения. Лицензия MIT разрешает использовать, изменять и
+      распространять код, включая коммерческое использование, при сохранении уведомления об
+      авторских правах и текста лицензии; код предоставляется «как есть», без гарантий.
+    </p>
+
+    <h2>Исходный код backend</h2>
+    <p>
+      Собственный код серверной части — каталог, расчётные оценки, внешний поиск, ИИ-ассистент и
+      тесты — распространяется по <strong>MIT License</strong> с тем же уведомлением
+      (<code>Copyright (c) 2026 Denis Aniskov</code>): файл
+      <a href={BACKEND_LICENSE_URL} rel="noopener noreferrer">LICENSE</a> публичного репозитория
+      backend. Публикация исходного кода не означает, что работающий производственный сервис
+      использует именно эту ревизию, и не предоставляет доступ к его внутренней инфраструктуре.
+    </p>
+
+    <h2>Исходный код официального сайта</h2>
+    <p>
+      Собственный код этого сайта — Astro-компоненты, страницы, модули на TypeScript, клиентские
+      скрипты, стили, Python-инструменты и сборочные скрипты — распространяется по
+      <strong>MIT License</strong> с тем же уведомлением (<code>Copyright (c) 2026 Denis Aniskov</code>):
+      файл <a href={WEBSITE_LICENSE_URL} rel="noopener noreferrer">LICENSE</a> публичного репозитория
+      сайта. Отдельно от кода действует правовой режим фирменных обозначений, брендовых изображений
+      и скриншотов интерфейса: он описан в
+      <a href={WEBSITE_ASSET_RIGHTS_URL} rel="noopener noreferrer">ASSET_RIGHTS.md</a>. Лицензия MIT
+      на код сайта не означает, что сайт собирается и публикуется из этого репозитория, и не
+      предоставляет доступ к его производственной инфраструктуре.
+    </p>
+
+    <h2>Географические данные OpenStreetMap</h2>
+    <p>
+      Каталог мест, scenic-набор, снимки дорожной сети и модель зданий происходят из
+      <a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">OpenStreetMap</a>:
+      <strong>© OpenStreetMap contributors</strong>, лицензия
+      <a href="https://opendatacommons.org/licenses/odbl/1-0/" rel="noopener noreferrer">ODbL 1.0</a
+      >. Адаптированный каталог трактуется консервативно как производная база (Derivative
+      Database).
+    </p>
+    <p>
+      Лицензия MIT на собственный код <strong>не применяется</strong> к данным OpenStreetMap и не
+      отменяет обязательств ODbL: атрибуция «© OpenStreetMap contributors» и предоставление
+      машиночитаемой производной базы сохраняются. Данные Яндекса — тайлы, копирайты, ответы
+      маршрутизации — в наборы ODbL не входят и не могут быть в них добавлены. Машиночитаемый
+      источник открыт в
+      каталоге
+      <a
+        href="https://github.com/DenisAniskov/SPb_in_Details_public/tree/main/data"
+        rel="noopener noreferrer">data/</a
+      > репозитория приложения.
+    </p>
+
+    <h2>Редакционные материалы каталога</h2>
+    <p>
+      Русские описания, причины для визита, заметки, теги и оценки времени визита — оригинальные
+      редакционные материалы проекта, отделённые от географических фактов. Ранее предоставленное
+      разрешение на их переиспользование вместе с каталогом и производными базами сохраняется без
+      изменений и не перелицензирует исходный код приложения, данные Яндекс SDK, товарные знаки и
+      сторонние тексты или фотографии.
+    </p>
+
+    <h2>Yandex MapKit</h2>
+    <p>
+      Картографическая основа, тайлы, копирайты и пешеходная маршрутизация предоставляются
+      официальным Full SDK <code>yandex_maps_mapkit</code> на условиях Яндекса:
+      <a href="https://yandex.ru/legal/maps_termsofuse/" rel="noopener noreferrer">
+        yandex.ru/legal/maps_termsofuse
+      </a>
+      и
+      <a href="https://yandex.ru/legal/maps_api/ru/" rel="noopener noreferrer">yandex.ru/legal/maps_api/ru</a
+      >. По условиям сервиса нативные логотипы, копирайты и ссылки карты должны оставаться видимыми
+      и не перекрытыми — в приложении есть ссылка на условия использования Яндекс.Карт в диалоге
+      «Источники и условия».
+    </p>
+    <p>
+      Ключ MapKit — клиентский: он распространяется вместе с APK, и получатель может его извлечь.
+      Защита опирается на ограничения ключа на стороне Яндекса, а не на обфускацию. Лицензия
+      OpenStreetMap не покрывает тайлы, копирайты и ответы маршрутизации Яндекса.
+    </p>
+
+    <h2>Open-Meteo, CAMS ENSEMBLE и погодные модели</h2>
+    <p>
+      Осадки для оценки влажности поверхности: <strong>Open-Meteo</strong>, модель
+      <strong>DWD ICON</strong> — атрибуция «Weather data by Open-Meteo.com; DWD ICON model».
+      Пыльца: <strong>Open-Meteo Air Quality API</strong>, данные
+      <strong>CAMS ENSEMBLE</strong> (Copernicus Atmosphere Monitoring Service) под лицензией
+      <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC-BY-4.0</a
+      >: обязательна атрибуция «data by Open-Meteo.com» и ссылка на CAMS ENSEMBLE.
+    </p>
+
+    <h2>ИИ-помощник и OpenRouter</h2>
+    <p>
+      Ассистент работает через <strong>OpenRouter</strong> с бесплатной моделью; ключ и выбор модели
+      остаются на сервере проекта и в приложение не передаются. Модель и её поставщик определяются
+      условиями OpenRouter и самого поставщика, включая возможное сохранение запросов и ответов на
+      их стороне. Ответы модели не являются проверенными фактами о городе.
+    </p>
+
+    <h2>Сторонние программные зависимости</h2>
+    <p>
+      Dart-пакеты (dio, provider, geolocator, shared_preferences, url_launcher, flutter_tts,
+      flutter_dotenv, package_info_plus, crypto, cupertino_icons, flutter_markdown_plus,
+      yandex_maps_mapkit) и Android-библиотеки используются на условиях их собственных лицензий — как
+      правило MIT или BSD-3-Clause в публикациях на
+      <a href="https://pub.dev/" rel="noopener noreferrer">pub.dev</a>. Точный набор с версиями
+      закреплён в <code>pubspec.lock</code> репозитория приложения. Тексты чужих лицензий не
+      перепечатываются и не выдаются за лицензию проекта.
+    </p>
+
+    <h2>Фирменное оформление и этот сайт</h2>
+    <p>
+      Название «Петербург в деталях», слоган, графический символ приложения и монохромная маска —
+      оригинальные элементы, созданные автором проекта; в пределах этих элементов действует то же
+      уведомление об авторских правах. Регистрация товарного знака не заявлялась и не проверялась.
+    </p>
+    <p>
+      Иконка сайта (favicon) и изображение предпросмотра ссылок получены из утверждённой иконки
+      приложения масштабированием и компоновкой: сам знак не перерисовывался. Подробности — в
+      документации
+      <a href={docUrl(release, 'branding')} rel="noopener noreferrer">«Бренд и иконка»</a>.
+    </p>
+    <p>
+      Сайт не подключает внешние библиотеки, шрифты и виджеты: стили, скрипты и изображения
+      отдаются с того же домена. Для отрисовки изображения предпросмотра использован шрифт
+      <strong>Roboto</strong> под лицензией Apache License 2.0; страницы сайта отображаются
+      системными шрифтами устройства. Знак GitHub применяется как ссылка на репозиторий проекта и
+      принадлежит GitHub, Inc.
+    </p>
+
+    <h2>Обязательные атрибуции</h2>
+    <ul>
+      {
+        project.attributions.map((attribution) => (
+          <li>
+            <strong>{attribution.name}</strong> — {attribution.role}. {attribution.notice}. Лицензия:{' '}
+            <a href={attribution.licenseUrl} rel="noopener noreferrer">{attribution.license}</a>
+            {' · '}
+            <a href={attribution.url} rel="noopener noreferrer">сайт источника</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>Чего не отменяет лицензия MIT</h2>
+    <ul>{notWaived.map((item) => <li>{item}</li>)}</ul>
+
+    <h2>Границы действия MIT</h2>
+    <p>
+      MIT License покрывает собственный исходный код трёх публичных репозиториев — приложения,
+      backend и официального сайта. Она не переносится автоматически на другие материалы проекта:
+      данные OpenStreetMap остаются под ODbL, редакционные материалы каталога — под ранее
+      предоставленным отдельным разрешением, сторонние библиотеки и сервисы — под условия их
+      правообладателей, а фирменное оформление и знак приложения остаются объектом отдельных прав
+      автора. Фирменные обозначения, брендовые изображения и скриншоты интерфейса не входят в
+      MIT-лицензию сайта и сохраняют самостоятельный правовой режим, изложенный в
+      <a href={WEBSITE_ASSET_RIGHTS_URL} rel="noopener noreferrer">ASSET_RIGHTS.md</a>.
+    </p>
+
+    <p class="small muted">
+      Этот документ — изложение первичных текстов лицензий и условий для проекта, а не юридическая
+      гарантия для любой юрисдикции. Как приложение обращается с данными, описано на странице
+      <a href="/privacy/">«Конфиденциальность»</a>.
+    </p>
+  </div>
+</BaseLayout>

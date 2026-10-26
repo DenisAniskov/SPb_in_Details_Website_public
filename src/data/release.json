@@ -1,0 +1,63 @@
+{
+  "$comment": "Единый источник данных о текущей опубликованной версии приложения. Все сведения о версии, ссылках на загрузку, размере и контрольной сумме берутся только отсюда. Новая версия добавляется вручную после проверки владельцем: автоматического переключения на свежий GitHub Release нет.",
+  "appName": "Петербург в деталях",
+  "slogan": "Замечай больше. Открывай Петербург.",
+  "author": "Денис Аниськов",
+  "copyright": "© 2026 Денис Аниськов.",
+  "releaseTitle": "Петербург в деталях — v1.1.1",
+  "version": "1.1.1",
+  "build": 3,
+  "gitTag": "v1.1.1",
+  "commitSha": "6076d5bde3fdb34e0ba0ff049516016dc3621046",
+  "packageName": "ru.smartnavigator.spb",
+  "publishedAt": "2026-10-26T11:05:54Z",
+  "platform": {
+    "name": "Android",
+    "minVersion": "8.0",
+    "minApiLevel": 26,
+    "targetApiLevel": 36
+  },
+  "apk": {
+    "fileName": "SPb_in_Details_1.1.1+3_release.apk",
+    "sizeBytes": 169835339,
+    "sha256": "2a5004d8fa16fe5f2747fea0ea9a6ee5c0d8bdaf42803e25492a8fc2900a9d63",
+    "architectures": [
+      "arm64-v8a",
+      "armeabi-v7a",
+      "x86_64"
+    ],
+    "alignment": "zipalign -p 4",
+    "signingSchemes": [
+      "APK Signature Scheme v2"
+    ]
+  },
+  "signature": {
+    "keyAlgorithm": "RSA 4096",
+    "certificateAlgorithm": "SHA384withRSA",
+    "certificateSubject": "CN=Denis Aniskov, L=Saint-Petersburg, ST=Saint-Petersburg, C=RU",
+    "certificateSha256": "f6a2e4a55a30ae097cc8f65b5a4fa69e212937cad94dec25dd76885bee6e96e9",
+    "certificateSha1": "3c4f2e0083402900a0a759939399c6fd924d5110",
+    "certificateValidUntil": "2054-03-07",
+    "keystoreKind": "постоянный сертификат разработчика"
+  },
+  "distribution": {
+    "channel": "GitHub Releases",
+    "requiresAccount": false,
+    "requiresRegistration": false,
+    "hostedOnThisSite": false
+  },
+  "urls": {
+    "repository": "https://github.com/DenisAniskov/SPb_in_Details_public",
+    "release": "https://github.com/DenisAniskov/SPb_in_Details_public/releases/tag/v1.1.1",
+    "apkDownload": "https://github.com/DenisAniskov/SPb_in_Details_public/releases/download/v1.1.1/SPb_in_Details_1.1.1%2B3_release.apk"
+  },
+  "docs": {
+    "privacy": "https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/docs/PRIVACY.md",
+    "knownLimitations": "https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/docs/KNOWN_LIMITATIONS.md",
+    "licensing": "https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/docs/LICENSING.md",
+    "thirdPartyAttributions": "https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/docs/THIRD_PARTY_ATTRIBUTIONS.md",
+    "branding": "https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/docs/BRANDING.md",
+    "building": "https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/docs/BUILDING.md",
+    "configuration": "https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/docs/CONFIGURATION.md"
+  }
+}

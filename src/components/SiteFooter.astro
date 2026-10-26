@@ -1,0 +1,106 @@
+---
+import Icon from './Icon.astro';
+import { release, project } from '../lib/site';
+
+const appLinks = [
+  { href: release.urls.apkDownload, label: `Скачать APK ${release.gitTag}`, external: false },
+  { href: release.urls.release, label: 'Страница релиза', external: true },
+  { href: project.repositories.app.url, label: project.repositories.app.label, external: true },
+  { href: project.repositories.backend.url, label: project.repositories.backend.label, external: true },
+];
+
+const docLinks = [
+  { href: '/#faq', label: 'Вопросы и ответы', external: false },
+  { href: '/privacy/', label: 'Конфиденциальность', external: false },
+  { href: '/legal/', label: 'Лицензии и сторонние компоненты', external: false },
+  { href: release.docs.knownLimitations, label: 'Известные ограничения', external: true },
+  { href: release.docs.branding, label: 'Бренд и иконка', external: true },
+  {
+    href: 'https://github.com/DenisAniskov/SPb_in_Details_public/blob/main/docs/BUILDING.md',
+    label: 'Сборка приложения',
+    external: true,
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <h2>Приложение</h2>
+        <ul>
+          {
+            appLinks.map((link) => (
+              <li>
+                <a href={link.href} rel={link.external ? 'noopener noreferrer' : undefined}>
+                  {link.label}
+                  {link.external && <Icon name="external" size={14} />}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2>Документы</h2>
+        <ul>
+          {
+            docLinks.map((link) => (
+              <li>
+                <a href={link.href} rel={link.external ? 'noopener noreferrer' : undefined}>
+                  {link.label}
+                  {link.external && <Icon name="external" size={14} />}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2>Источники данных</h2>
+        <ul>
+          {
+            project.attributions.map((attribution) => (
+              <li>
+                <a href={attribution.url} rel="noopener noreferrer">
+                  {attribution.name}
+                  <Icon name="external" size={14} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2>Обновления</h2>
+        <p class="small muted">
+          Новая версия появляется на сайте только после того, как владелец проверит релиз и
+          обновит данные о версии. Автоматического перехода на свежую сборку GitHub нет.
+        </p>
+        <p class="small muted">
+          Подробности: <a href="/legal/">лицензии и атрибуции</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="footer-attributions">
+        Карты и пешеходные маршруты: Яндекс.Карты (Yandex MapKit). Места и географические факты:
+        © OpenStreetMap contributors, лицензия <a
+          href="https://opendatacommons.org/licenses/odbl/1-0/"
+          rel="noopener noreferrer">ODbL 1.0</a
+        >. Погодные данные: Open-Meteo и CAMS ENSEMBLE (CC-BY-4.0). Полный перечень — на странице
+        <a href="/legal/">лицензий и сторонних компонентов</a>.
+      </p>
+      <p>{release.copyright}</p>
+      <p>
+        Сайт не подключает аналитику, рекламу и сторонние трекеры и ничего не запрашивает о вас.
+        В браузере сохраняется только выбранное оформление. Технические журналы хостинга ведутся по
+        правилам провайдера — подробности на странице <a href="/privacy/">«Конфиденциальность»</a>.
+      </p>
+    </div>
+  </div>
+</footer>

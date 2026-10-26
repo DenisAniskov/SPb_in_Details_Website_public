@@ -1,0 +1,59 @@
+---
+/**
+ * Theme selector: system, light, dark.
+ *
+ * A radio group rather than three toggle buttons, because the three options are
+ * mutually exclusive and a screen reader should announce which one is current.
+ * The component ships `hidden` and `/theme.js` reveals it: without JavaScript
+ * the site still follows the system preference through CSS, and a visible
+ * control that cannot change anything would be a lie.
+ *
+ * Rendered twice on the page — compact in the header, with labels inside the
+ * mobile menu — because at phone widths the header cannot hold it without
+ * pushing the menu button off the screen.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  /** `compact` — icons only (header); `full` — icons with visible labels (menu). */
+  variant?: 'compact' | 'full';
+}
+
+const { variant = 'compact' } = Astro.props;
+
+// The same short label is used in both variants: in the header it is read by a
+// screen reader only, in the menu it is visible too — and a visible label has
+// to be part of the accessible name (WCAG 2.5.3). The group label above them
+// ("Оформление сайта") supplies the missing word.
+const options = [
+  { mode: 'system', icon: 'auto', label: 'Системная' },
+  { mode: 'light', icon: 'sun', label: 'Светлая' },
+  { mode: 'dark', icon: 'moon', label: 'Тёмная' },
+];
+---
+
+<div
+  class:list={['theme-switch', `theme-switch--${variant}`]}
+  role="radiogroup"
+  aria-label="Оформление сайта"
+  data-theme-switch
+  hidden
+>
+  {
+    options.map((option) => (
+      <button
+        type="button"
+        class="theme-switch__option"
+        role="radio"
+        aria-checked="false"
+        tabindex="-1"
+        data-theme-option={option.mode}
+      >
+        <Icon name={option.icon} size={variant === 'compact' ? 17 : 18} />
+        <span class={variant === 'compact' ? 'visually-hidden' : 'theme-switch__label'}>
+          {option.label}
+        </span>
+      </button>
+    ))
+  }
+</div>

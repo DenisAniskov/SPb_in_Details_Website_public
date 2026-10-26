@@ -1,0 +1,36 @@
+---
+/**
+ * Inline SVG icon. Everyone inherits `currentColor`, so colour comes from the
+ * surrounding text. Icons are decorative: every one of them sits next to a
+ * label, and the SVG is hidden from assistive technology.
+ */
+import { ICONS } from '../icons';
+
+interface Props {
+  name: string;
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 20, class: className = '' } = Astro.props;
+const icon = ICONS[name] ?? ICONS['alert']!;
+const viewBox = icon.viewBox ?? '0 0 24 24';
+const filled = icon.filled === true;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox={viewBox}
+  fill={filled ? 'currentColor' : 'none'}
+  stroke={filled ? 'none' : 'currentColor'}
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  aria-hidden="true"
+  focusable="false"
+>
+  {icon.paths.map((d) => <path d={d} />)}
+</svg>

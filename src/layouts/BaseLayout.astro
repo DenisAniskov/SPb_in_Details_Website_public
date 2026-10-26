@@ -1,0 +1,37 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+}
+
+const { title, description, noindex = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <BaseHead title={title} description={description} noindex={noindex} />
+  </head>
+  <body>
+    <div class="backdrop" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Перейти к содержимому</a>
+    <SiteHeader />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+
+    <!--
+      External file on purpose: the copy button and the screenshot lightbox are
+      progressive enhancements, and keeping them out of the document lets the
+      Content-Security-Policy stay strict (no inline scripts).
+    -->
+    <script is:inline src="/ui.js" defer></script>
+  </body>
+</html>

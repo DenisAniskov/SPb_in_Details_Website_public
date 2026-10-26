@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { release } from '../lib/site';
+
+const title = `Страница не найдена — ${release.appName}`;
+const description = 'Такой страницы на сайте нет. Откройте главную страницу или скачайте приложение.';
+---
+
+<BaseLayout title={title} description={description} noindex>
+  <section class="section">
+    <div class="container prose">
+      <p class="eyebrow">Ошибка 404</p>
+      <h1>Страницы нет</h1>
+      <p>
+        Возможно, адрес введён с опечаткой или страница переехала. Ссылки на загрузку приложения и
+        документы живут на главной странице.
+      </p>
+      <p>
+        <a class="btn btn--primary" href="/">На главную</a>
+      </p>
+      <p class="small muted">
+        Если нужен файл приложения — он всегда доступен в официальном релизе:
+        <a href={release.urls.release} rel="noopener noreferrer">GitHub Release {release.gitTag}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

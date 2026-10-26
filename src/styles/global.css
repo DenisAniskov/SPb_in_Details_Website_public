@@ -1,0 +1,1867 @@
+/* =============================================================================
+   Петербург в деталях — official site stylesheet
+   -----------------------------------------------------------------------------
+   One stylesheet, no framework. Sections:
+     1. Design tokens        7. Header and navigation
+     2. Reset and base       8. Page sections
+     3. Layout primitives    9. Prose pages (privacy, legal)
+     4. Typography          10. Motion preferences and responsive rules
+     5. Buttons and links   11. Theme switcher
+     6. Cards and chips
+
+   Two themes share one set of components. `:root` holds the dark palette — the
+   approved brand look, sampled from the application icon
+   (docs/branding/original_app_icon.png): deep blue background, gold accent,
+   light-blue details. The light palette is declared once for the explicit
+   choice (`data-theme="light"`, written by theme.js) and once for the system
+   preference, which is the only path that works without JavaScript.
+   ========================================================================== */
+
+/* 1. Design tokens ========================================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* Brand blues — sampled from the icon gradient. */
+  --navy-1000: #00061c;
+  --navy-950: #000a2e;
+  --navy-900: #01134c;
+  --navy-800: #011c60;
+  --navy-700: #01216c;
+  --blue-600: #003394;
+  --blue-500: #0049b3;
+  --blue-400: #026dde;
+  --sky-300: #55b1f6;
+  --sky-200: #a8e8fc;
+
+  /* Brand golds — sampled from the pin and the bridge. */
+  --gold-400: #f3c363;
+  --gold-300: #fee095;
+  --gold-200: #f2e2a9;
+
+  /* Text — verified against --navy-950 and --navy-1000 for AA contrast. */
+  --text: #f4f7ff;
+  --text-muted: #c3d0e8;
+  --text-soft: #9fb0cd;
+  --text-on-gold: #06152f;
+
+  --border: rgba(168, 232, 252, 0.14);
+  --border-strong: rgba(168, 232, 252, 0.26);
+  --surface: linear-gradient(180deg, rgba(1, 28, 96, 0.62), rgba(1, 19, 76, 0.42));
+  --surface-solid: #041033;
+  --surface-sunken: rgba(0, 6, 28, 0.55);
+
+  /* Theme surfaces. Every component below is painted from these, so a theme is
+     a list of values and never a second set of rules. */
+  --bg: var(--navy-1000);
+  --bg-top: var(--navy-950);
+  --bg-bottom: #00040f;
+  --header-bg: rgba(0, 6, 28, 0.78);
+  --panel-bg: var(--surface-solid);
+  --footer-bg: rgba(0, 4, 15, 0.6);
+  --hover-bg: rgba(0, 73, 179, 0.25);
+  --hover-bg-strong: rgba(0, 73, 179, 0.32);
+  --chip-bg: rgba(0, 6, 28, 0.4);
+  --code-bg: rgba(0, 0, 0, 0.4);
+  --code-ink: var(--sky-200);
+  --btn-secondary-bg: rgba(0, 73, 179, 0.22);
+  --btn-secondary-bg-hover: rgba(0, 73, 179, 0.34);
+  --lightbox-bg: rgba(0, 4, 15, 0.88);
+  --zoom-bg: rgba(0, 6, 28, 0.74);
+
+  /* Links, focus and accents. */
+  --link: var(--sky-200);
+  --link-hover: var(--gold-300);
+  --link-underline: rgba(168, 232, 252, 0.4);
+  --accent: var(--sky-300);
+  --focus: var(--gold-300);
+  --gold-ink: var(--gold-200);
+  --gold-line: rgba(243, 195, 99, 0.35);
+  --gold-rule: var(--gold-400);
+  --gold-wash: linear-gradient(180deg, rgba(243, 195, 99, 0.2), rgba(243, 195, 99, 0.06));
+  --skip-bg: var(--gold-300);
+  --skip-ink: #06152f;
+
+  /* Decorative background: brand gradients plus a faint map grid. */
+  --glow-1: rgba(2, 109, 222, 0.34);
+  --glow-2: rgba(0, 51, 148, 0.42);
+  --glow-3: rgba(1, 28, 96, 0.6);
+  --grid-line: rgba(168, 232, 252, 0.05);
+  --motif-line: rgba(168, 232, 252, 0.1);
+  --hero-panel-bg:
+    radial-gradient(420px 320px at 50% 0%, rgba(2, 109, 222, 0.35), transparent 70%),
+    linear-gradient(180deg, rgba(1, 28, 96, 0.65), rgba(0, 6, 28, 0.55));
+  --frame-bg:
+    linear-gradient(180deg, rgba(1, 28, 96, 0.5), rgba(0, 6, 28, 0.45)),
+    repeating-linear-gradient(180deg, rgba(168, 232, 252, 0.06) 0 1px, transparent 1px 34px);
+  --download-bg:
+    radial-gradient(520px 320px at 100% 0%, rgba(243, 195, 99, 0.16), transparent 65%),
+    linear-gradient(180deg, rgba(1, 28, 96, 0.7), rgba(0, 6, 28, 0.6));
+
+  --radius-sm: 0.6rem;
+  --radius: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 18px 40px -28px rgba(0, 0, 0, 0.9);
+  --shadow-panel: 0 24px 50px -24px rgba(0, 0, 0, 0.9);
+  --shadow-gold: 0 14px 34px -16px rgba(243, 195, 99, 0.55);
+  --shadow-gold-hover: 0 18px 40px -14px rgba(243, 195, 99, 0.7);
+  --shadow-image: 0 30px 60px -22px rgba(0, 0, 0, 0.85);
+  --shadow-download: 0 40px 80px -50px rgba(243, 195, 99, 0.45);
+  --shadow-shot: 0 20px 44px -30px rgba(0, 0, 0, 0.9);
+
+  --container: 1140px;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --section-space: clamp(3.5rem, 8vw, 6.5rem);
+  --header-height: 4.25rem;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 1b. Light theme ==========================================================
+   A palette of its own, not an inversion of the dark one: a warm off-white
+   page, deep navy text, the same brand gold used as an ink (a light gold on
+   white would be unreadable), white cards with quiet borders.
+
+   The block is written twice on purpose. `data-theme="light"` covers a visitor
+   who chose light by hand; `:not([data-theme])` inside the media query covers
+   everyone whose JavaScript is off, where CSS alone has to follow the system.
+   CSS cannot share one declaration block between a media query and an
+   attribute selector, and generating the palette at build time would hide it
+   from anyone reading this file.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+
+    --text: #0b1b3f;
+    --text-muted: #3a4a6b;
+    --text-soft: #5a6b8c;
+    --text-on-gold: #06152f;
+
+    --border: rgba(11, 27, 63, 0.12);
+    --border-strong: rgba(11, 27, 63, 0.22);
+    --surface: linear-gradient(180deg, #ffffff, #faf8f4);
+    --surface-solid: #ffffff;
+    --surface-sunken: rgba(11, 27, 63, 0.04);
+
+    --bg: #f6f4ef;
+    --bg-top: #fbfaf7;
+    --bg-bottom: #eeeae2;
+    --header-bg: rgba(252, 251, 248, 0.86);
+    --panel-bg: #ffffff;
+    --footer-bg: rgba(237, 233, 224, 0.75);
+    --hover-bg: rgba(11, 75, 181, 0.08);
+    --hover-bg-strong: rgba(11, 75, 181, 0.15);
+    --chip-bg: rgba(11, 27, 63, 0.04);
+    --code-bg: rgba(11, 27, 63, 0.06);
+    --code-ink: #0b4bb5;
+    --btn-secondary-bg: rgba(11, 75, 181, 0.08);
+    --btn-secondary-bg-hover: rgba(11, 75, 181, 0.16);
+    --lightbox-bg: rgba(20, 30, 55, 0.82);
+    --zoom-bg: rgba(255, 255, 255, 0.9);
+
+    --link: #0b4bb5;
+    --link-hover: #7a4f00;
+    --link-underline: rgba(11, 75, 181, 0.35);
+    --accent: #0b4bb5;
+    --focus: #0b4bb5;
+    --gold-ink: #7a4f00;
+    --gold-line: rgba(150, 104, 16, 0.32);
+    --gold-rule: #c98a12;
+    --gold-wash: linear-gradient(180deg, rgba(243, 195, 99, 0.3), rgba(243, 195, 99, 0.1));
+    --skip-bg: #0b4bb5;
+    --skip-ink: #ffffff;
+
+    --glow-1: rgba(2, 109, 222, 0.1);
+    --glow-2: rgba(243, 195, 99, 0.3);
+    --glow-3: rgba(1, 28, 96, 0.05);
+    --grid-line: rgba(11, 27, 63, 0.05);
+    --motif-line: rgba(11, 75, 181, 0.09);
+    --hero-panel-bg:
+      radial-gradient(420px 320px at 50% 0%, rgba(2, 109, 222, 0.12), transparent 70%),
+      linear-gradient(180deg, #ffffff, #f4f1ea);
+    --frame-bg:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(244, 241, 234, 0.9)),
+      repeating-linear-gradient(180deg, rgba(11, 75, 181, 0.05) 0 1px, transparent 1px 34px);
+    --download-bg:
+      radial-gradient(520px 320px at 100% 0%, rgba(243, 195, 99, 0.28), transparent 65%),
+      linear-gradient(180deg, #ffffff, #faf7f0);
+
+    --shadow-card: 0 18px 40px -30px rgba(11, 27, 63, 0.35);
+    --shadow-panel: 0 24px 50px -26px rgba(11, 27, 63, 0.35);
+    --shadow-gold: 0 14px 34px -18px rgba(180, 130, 30, 0.5);
+    --shadow-gold-hover: 0 18px 40px -16px rgba(180, 130, 30, 0.62);
+    --shadow-image: 0 26px 50px -26px rgba(11, 27, 63, 0.4);
+    --shadow-download: 0 40px 80px -54px rgba(180, 130, 30, 0.45);
+    --shadow-shot: 0 20px 44px -32px rgba(11, 27, 63, 0.45);
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  /* Kept in step with the block above by hand: CSS cannot share one
+     declaration block between a media query and an attribute selector. */
+
+  --text: #0b1b3f;
+  --text-muted: #3a4a6b;
+  --text-soft: #5a6b8c;
+  --text-on-gold: #06152f;
+
+  --border: rgba(11, 27, 63, 0.12);
+  --border-strong: rgba(11, 27, 63, 0.22);
+  --surface: linear-gradient(180deg, #ffffff, #faf8f4);
+  --surface-solid: #ffffff;
+  --surface-sunken: rgba(11, 27, 63, 0.04);
+
+  --bg: #f6f4ef;
+  --bg-top: #fbfaf7;
+  --bg-bottom: #eeeae2;
+  --header-bg: rgba(252, 251, 248, 0.86);
+  --panel-bg: #ffffff;
+  --footer-bg: rgba(237, 233, 224, 0.75);
+  --hover-bg: rgba(11, 75, 181, 0.08);
+  --hover-bg-strong: rgba(11, 75, 181, 0.15);
+  --chip-bg: rgba(11, 27, 63, 0.04);
+  --code-bg: rgba(11, 27, 63, 0.06);
+  --code-ink: #0b4bb5;
+  --btn-secondary-bg: rgba(11, 75, 181, 0.08);
+  --btn-secondary-bg-hover: rgba(11, 75, 181, 0.16);
+  --lightbox-bg: rgba(20, 30, 55, 0.82);
+  --zoom-bg: rgba(255, 255, 255, 0.9);
+
+  --link: #0b4bb5;
+  --link-hover: #7a4f00;
+  --link-underline: rgba(11, 75, 181, 0.35);
+  --accent: #0b4bb5;
+  --focus: #0b4bb5;
+  --gold-ink: #7a4f00;
+  --gold-line: rgba(150, 104, 16, 0.32);
+  --gold-rule: #c98a12;
+  --gold-wash: linear-gradient(180deg, rgba(243, 195, 99, 0.3), rgba(243, 195, 99, 0.1));
+  --skip-bg: #0b4bb5;
+  --skip-ink: #ffffff;
+
+  --glow-1: rgba(2, 109, 222, 0.1);
+  --glow-2: rgba(243, 195, 99, 0.3);
+  --glow-3: rgba(1, 28, 96, 0.05);
+  --grid-line: rgba(11, 27, 63, 0.05);
+  --motif-line: rgba(11, 75, 181, 0.09);
+  --hero-panel-bg:
+    radial-gradient(420px 320px at 50% 0%, rgba(2, 109, 222, 0.12), transparent 70%),
+    linear-gradient(180deg, #ffffff, #f4f1ea);
+  --frame-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(244, 241, 234, 0.9)),
+    repeating-linear-gradient(180deg, rgba(11, 75, 181, 0.05) 0 1px, transparent 1px 34px);
+  --download-bg:
+    radial-gradient(520px 320px at 100% 0%, rgba(243, 195, 99, 0.28), transparent 65%),
+    linear-gradient(180deg, #ffffff, #faf7f0);
+
+  --shadow-card: 0 18px 40px -30px rgba(11, 27, 63, 0.35);
+  --shadow-panel: 0 24px 50px -26px rgba(11, 27, 63, 0.35);
+  --shadow-gold: 0 14px 34px -18px rgba(180, 130, 30, 0.5);
+  --shadow-gold-hover: 0 18px 40px -16px rgba(180, 130, 30, 0.62);
+  --shadow-image: 0 26px 50px -26px rgba(11, 27, 63, 0.4);
+  --shadow-download: 0 40px 80px -54px rgba(180, 130, 30, 0.45);
+  --shadow-shot: 0 20px 44px -32px rgba(11, 27, 63, 0.45);
+}
+
+/* A theme change is a colour change, not a layout change: only surfaces fade,
+   and only when the visitor has not asked for reduced motion (the rule at the
+   end of this file zeroes every duration in that case). */
+@media (prefers-reduced-motion: no-preference) {
+  body,
+  .site-header,
+  .site-footer,
+  .nav-toggle__panel,
+  .card,
+  .chip,
+  .code-block,
+  .notice,
+  .screen__shot,
+  .theme-switch__option {
+    transition: background-color 0.25s var(--ease), color 0.25s var(--ease),
+      border-color 0.25s var(--ease);
+  }
+}
+
+/* 2. Reset and base ======================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Anchors from the sticky header must not hide section headings. */
+  scroll-padding-top: calc(var(--header-height) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text);
+  background-color: var(--bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  /* Safety net for enlarged text: a URL or a long word breaks instead of
+     pushing the page sideways. `anywhere` (not `break-word`) is deliberate —
+     it also lowers the min-content width, so a flex or grid track can shrink
+     instead of being widened by one unbreakable token. */
+  overflow-wrap: anywhere;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+/* Decorative background: brand gradients plus a faint map grid. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(900px 520px at 12% -8%, var(--glow-1), transparent 62%),
+    radial-gradient(760px 460px at 88% 2%, var(--glow-2), transparent 64%),
+    radial-gradient(1100px 700px at 50% 108%, var(--glow-3), transparent 70%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 48%, var(--bg-bottom) 100%);
+}
+
+.backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px 72px);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.75), transparent 72%);
+}
+
+/* 3. Layout primitives ===================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-space);
+}
+
+.section--tight {
+  padding-block: calc(var(--section-space) * 0.6);
+}
+
+.stack > * + * {
+  margin-top: var(--stack-gap, 1rem);
+}
+
+.lead {
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  color: var(--text-muted);
+  max-width: 62ch;
+}
+
+.section__head {
+  max-width: 68ch;
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.section__head > * + * {
+  margin-top: 0.85rem;
+}
+
+/* Widow/orphan control for headings that wrap onto two lines. */
+.balance {
+  text-wrap: balance;
+}
+
+.grid {
+  display: grid;
+  gap: clamp(0.85rem, 2vw, 1.25rem);
+}
+
+.grid--features {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
+}
+
+/* Five phone screenshots. The narrow track lets the columns follow the width:
+   two per row on a phone from about 360px, four on a tablet, all five in one
+   row from roughly 1024px. Only a 320px screen falls back to a single column,
+   where two columns would be too small to be useful. */
+.grid--screens {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.75rem), 1fr));
+}
+
+/* A tablet would otherwise fit four screenshots in the first row and leave the
+   fifth alone underneath: three columns read as a pair of rows instead. */
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .grid--screens {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.grid--two {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+
+/* 4. Typography ============================================================ */
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  /* Last resort for a heading that is one long word: break it instead of
+     pushing the whole page sideways. */
+  overflow-wrap: break-word;
+}
+
+h1 {
+  font-size: clamp(2.15rem, 5.5vw, 4rem);
+}
+
+h2 {
+  font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  letter-spacing: -0.01em;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+p {
+  margin: 0;
+}
+
+/* The browser gives every <figure> a 40px inline margin of its own. Inside a
+   grid track that silently takes 80px off the artwork: a phone screenshot was
+   rendering 119px wide in a 199px column, and the brand images sat inset from
+   the cards they belong to. */
+figure {
+  margin: 0;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.soft {
+  color: var(--text-soft);
+}
+
+.small {
+  font-size: 0.9rem;
+}
+
+.tiny {
+  font-size: 0.82rem;
+}
+
+strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* A file name or a checksum is a single long token: without this it pushes a
+   command past the edge of a narrow card and hides its tail. */
+code {
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--link);
+  text-decoration-color: var(--link-underline);
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* 5. Buttons and links ===================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.18s var(--ease), background-color 0.18s var(--ease),
+    border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+
+.btn--primary {
+  background-image: linear-gradient(180deg, #f8d183, #e9b34c);
+  color: var(--text-on-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.btn--primary:hover {
+  color: var(--text-on-gold);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-gold-hover);
+}
+
+.btn--secondary {
+  background-color: var(--btn-secondary-bg);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.btn--secondary:hover {
+  background-color: var(--btn-secondary-bg-hover);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.btn--large {
+  min-height: 3.5rem;
+  padding: 1rem 1.9rem;
+  font-size: 1.05rem;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn__hint {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.link-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* 6. Cards and chips ======================================================= */
+
+.card {
+  position: relative;
+  padding: clamp(1.15rem, 2.2vw, 1.5rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.card--hover:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 0.95rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--gold-line);
+  background: var(--gold-wash);
+  color: var(--gold-ink);
+}
+
+.card h3 + p {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background-color: var(--chip-bg);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.chip--gold {
+  border-color: var(--gold-line);
+  color: var(--gold-ink);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge--gold {
+  color: var(--gold-ink);
+}
+
+.notice {
+  display: flex;
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-rule);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-sunken);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.notice strong {
+  color: var(--gold-ink);
+}
+
+/* 7. Header and navigation ================================================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--header-bg);
+  backdrop-filter: blur(14px);
+}
+
+.site-header__inner {
+  display: flex;
+  /* With enlarged text the row must be able to wrap instead of pushing the menu
+     button off the screen; at normal sizes everything still fits on one row. */
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  min-height: var(--header-height);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-right: auto;
+  min-width: 0;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand img {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.7rem;
+  border: 1px solid var(--border-strong);
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand__name {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.brand__version {
+  font-size: 0.72rem;
+  color: var(--text-soft);
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.7rem;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.site-nav__link:hover {
+  color: var(--text);
+  background-color: var(--hover-bg);
+}
+
+.site-header__cta {
+  min-height: 2.75rem;
+  padding-inline: 1.1rem;
+}
+
+/* Small screens: a native disclosure menu keeps the header usable without JS. */
+.nav-toggle {
+  display: none;
+  position: relative;
+}
+
+.nav-toggle > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.nav-toggle > summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-toggle[open] > summary {
+  background-color: var(--hover-bg-strong);
+}
+
+.nav-toggle__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  /* Wide enough for the menu labels, never wider than the screen — including
+     when the reader has enlarged the text. */
+  min-width: min(13rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  padding: 0.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--panel-bg);
+  box-shadow: var(--shadow-panel);
+}
+
+.nav-toggle__panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-toggle__panel a {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.7rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.nav-toggle__panel a:hover {
+  color: var(--text);
+  background-color: var(--hover-bg-strong);
+}
+
+/* 7b. Theme switcher =======================================================
+   A radio group of three: system, light, dark. It ships hidden and is revealed
+   by /theme.js — without JavaScript the site follows the system preference
+   through CSS and the control would have nothing to do.
+   -------------------------------------------------------------------------- */
+
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.2rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background-color: var(--chip-bg);
+}
+
+.theme-switch__option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-width: 2.35rem;
+  min-height: 2.35rem;
+  padding: 0 0.45rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--text-soft);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.theme-switch__option:hover {
+  color: var(--text);
+  background-color: var(--hover-bg);
+}
+
+.theme-switch__option[aria-checked='true'] {
+  border-color: var(--gold-line);
+  background: var(--gold-wash);
+  color: var(--text);
+}
+
+.theme-switch__label {
+  white-space: nowrap;
+}
+
+/* Inside the mobile menu the switcher is a full-width row: labels are visible
+   and each option is a full-height touch target. */
+.theme-switch--full {
+  display: flex;
+  width: 100%;
+}
+
+.theme-switch--full .theme-switch__option {
+  flex: 1 1 0;
+  min-height: 2.75rem;
+  padding-inline: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.nav-toggle__theme {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.7rem 0.35rem;
+  border-top: 1px solid var(--border);
+}
+
+.nav-toggle__caption {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+/* 8. Page sections ========================================================= */
+
+/* --- Hero ----------------------------------------------------------------- */
+
+.hero {
+  padding-block: clamp(2.5rem, 6vw, 5rem) clamp(2.5rem, 7vw, 5.5rem);
+}
+
+.hero__layout {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+}
+
+.hero__text > * + * {
+  margin-top: 1.15rem;
+}
+
+.hero__slogan {
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 600;
+  color: var(--gold-ink);
+  letter-spacing: -0.01em;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.hero__facts {
+  display: grid;
+  gap: 0.4rem 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  margin: 0;
+  padding: 1.15rem 0 0;
+  border-top: 1px solid var(--border);
+  list-style: none;
+}
+
+.hero__facts li {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.hero__facts svg {
+  flex: none;
+  margin-top: 0.25rem;
+  color: var(--gold-ink);
+}
+
+.hero__visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--hero-panel-bg);
+  overflow: hidden;
+}
+
+/* Faint map contour motif — decoration, not an interface mock-up. */
+.hero__visual::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background-image:
+    repeating-radial-gradient(circle at 30% 70%, var(--motif-line) 0 1px, transparent 1px 42px),
+    repeating-linear-gradient(48deg, var(--motif-line) 0 1px, transparent 1px 56px);
+  opacity: 0.9;
+}
+
+.hero__icon-group {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+  text-align: center;
+}
+
+.hero__icon {
+  width: clamp(9rem, 22vw, 13rem);
+  height: auto;
+  border-radius: 26%;
+  box-shadow: var(--shadow-image);
+}
+
+.hero__icon-label {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+/* --- Features ------------------------------------------------------------- */
+
+.features__footnote {
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/* --- Showcase ------------------------------------------------------------- */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* Placeholder: an empty slot still explains the screen in words. */
+.screen__frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--frame-bg);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.screen__pending {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.screen__pending svg {
+  color: var(--accent);
+}
+
+/* A published screenshot keeps its own proportions: the image is shown whole,
+   never cropped to a frame, and it is a real link to the full-size file so the
+   enlargement works before any script runs. */
+.screen__shot {
+  position: relative;
+  display: block;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--surface-solid);
+  box-shadow: var(--shadow-shot);
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.screen__shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.screen__shot:hover {
+  border-color: var(--gold-line);
+}
+
+.screen__zoom {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background-color: var(--zoom-bg);
+  color: var(--text);
+  opacity: 0;
+}
+
+.screen__shot:hover .screen__zoom,
+.screen__shot:focus-visible .screen__zoom {
+  opacity: 1;
+}
+
+/* One line for the whole grid: the five screens were captured in one session,
+   so the same sentence under every figure would be noise. */
+.showcase__provenance {
+  margin-top: 1.25rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--gold-line);
+  max-width: 82ch;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+
+/* Enlarged screenshot. A native dialog: focus handling, Escape and the top
+   layer come from the browser, and /ui.js only fills in the image. */
+.lightbox {
+  width: auto;
+  max-width: min(96vw, 34rem);
+  max-height: 94vh;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background-color: var(--surface-solid);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.lightbox::backdrop {
+  background-color: var(--lightbox-bg);
+}
+
+.lightbox__inner {
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  padding: 0.75rem;
+  overflow: auto;
+  max-height: 94vh;
+}
+
+.lightbox__image {
+  max-height: calc(94vh - 6rem);
+  width: auto;
+  max-width: 100%;
+  border-radius: var(--radius-sm);
+}
+
+.lightbox__caption {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  text-align: center;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background-color: var(--zoom-bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.screen__caption {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.screen__caption a {
+  font-weight: 500;
+}
+
+/* Provenance line: derived from the data file, never written by hand, so it
+   cannot contradict how the image was actually captured. */
+.screen__provenance {
+  display: block;
+  margin-top: 0.5rem;
+  padding-left: 0.65rem;
+  border-left: 2px solid var(--border-strong);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.assets-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.asset {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-sunken);
+}
+
+.asset img {
+  width: 100%;
+  border-radius: var(--radius-sm);
+}
+
+.asset__caption {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+}
+
+.showcase__subhead {
+  margin-top: clamp(2.25rem, 5vw, 3.25rem);
+  margin-bottom: 0.6rem;
+}
+
+/* --- Download ------------------------------------------------------------- */
+
+.download-card {
+  position: relative;
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  border: 1px solid var(--gold-line);
+  border-radius: var(--radius-lg);
+  background: var(--download-bg);
+  box-shadow: var(--shadow-download);
+}
+
+.download-card__meta {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.download-card__meta li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.download-card__meta svg {
+  flex: none;
+  margin-top: 0.25rem;
+  color: var(--accent);
+}
+
+.spec {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.spec__row {
+  display: grid;
+  /* The column must be allowed to shrink: a file name or a package id is one
+     unbreakable token, and without this it widens the track past the card. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.spec__row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.spec dt {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.spec dd {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+  /* Same reason as the track above: break the token rather than the layout. */
+  overflow-wrap: anywhere;
+}
+
+.code-block {
+  display: block;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--code-ink);
+  overflow-wrap: anywhere;
+}
+
+/* A click selects the whole checksum: the copy button is an addition to this,
+   not a replacement — it is also what the button falls back to. */
+.select-all {
+  user-select: all;
+}
+
+/* Checksum plus its copy button and the confirmation line. */
+.copy-row {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+.copy-row .code-block {
+  width: 100%;
+}
+
+.copy-row__button {
+  min-height: 2.75rem;
+  padding-inline: 1.1rem;
+}
+
+.copy-row__status {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+}
+
+.copy-row__status[data-state='ok'] {
+  color: var(--gold-ink);
+}
+
+.copy-row__status:empty {
+  display: none;
+}
+
+details.disclosure {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-sunken);
+  padding: 0.85rem 1rem;
+}
+
+details.disclosure > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+  list-style: none;
+}
+
+details.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.disclosure > summary::after {
+  content: ' ↓';
+  color: var(--gold-ink);
+}
+
+details.disclosure[open] > summary::after {
+  content: ' ↑';
+}
+
+details.disclosure > *:not(summary) {
+  margin-top: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+/* --- Security, about ------------------------------------------------------ */
+
+.checklist {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  color: var(--text-muted);
+}
+
+.checklist svg {
+  flex: none;
+  margin-top: 0.3rem;
+  color: var(--gold-ink);
+}
+
+/* --- Install steps -------------------------------------------------------- */
+
+.install {
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.steps {
+  counter-reset: step;
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 82ch;
+}
+
+.steps li {
+  position: relative;
+  padding-left: 2.6rem;
+  color: var(--text-muted);
+}
+
+.steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.1rem;
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--gold-line);
+  background: var(--gold-wash);
+  color: var(--gold-ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.steps strong {
+  color: var(--text);
+}
+
+/* --- FAQ ------------------------------------------------------------------ */
+
+.faq {
+  display: grid;
+  gap: clamp(0.85rem, 2vw, 1.25rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  margin: 0;
+}
+
+.faq__item {
+  padding: clamp(1.1rem, 2.2vw, 1.5rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.faq dt {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.faq dt svg {
+  flex: none;
+  margin-top: 0.3rem;
+  color: var(--gold-ink);
+}
+
+.faq dd {
+  margin: 0.6rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.author-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-sunken);
+}
+
+.author-card__mark {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--gold-line);
+  background: var(--gold-wash);
+  color: var(--gold-ink);
+  font-weight: 700;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table.tech {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+table.tech th,
+table.tech td {
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+table.tech th {
+  color: var(--text-soft);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+table.tech td {
+  color: var(--text-muted);
+}
+
+/* --- Footer --------------------------------------------------------------- */
+
+.site-footer {
+  margin-top: clamp(2rem, 5vw, 4rem);
+  border-top: 1px solid var(--border);
+  background-color: var(--footer-bg);
+  padding-block: clamp(2.25rem, 5vw, 3.5rem) 1.5rem;
+}
+
+.site-footer__grid {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+}
+
+.site-footer h2,
+.site-footer h3 {
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+.site-footer ul {
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.site-footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.75rem;
+}
+
+.site-footer a:hover {
+  color: var(--gold-ink);
+  text-decoration: underline;
+}
+
+.site-footer__bottom {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 0.85rem;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.footer-attributions {
+  max-width: 80ch;
+}
+
+.footer-attributions a {
+  color: var(--accent);
+  min-height: auto;
+}
+
+/* 9. Prose pages =========================================================== */
+
+.page-head {
+  padding-block: clamp(2.25rem, 5vw, 3.5rem) clamp(1rem, 2vw, 1.5rem);
+  border-bottom: 1px solid var(--border);
+}
+
+.page-head > * + * {
+  margin-top: 1rem;
+}
+
+/* Document titles are single words on the document pages ("Конфиденциальность"),
+   so on a narrow screen the smallest size has to let that word fit the column —
+   otherwise the title alone makes the page scroll sideways. */
+.page-head h1 {
+  font-size: clamp(1.6rem, 5.5vw, 4rem);
+}
+
+.prose {
+  max-width: 74ch;
+  padding-block: clamp(1.75rem, 4vw, 3rem);
+}
+
+.prose > * + * {
+  margin-top: 1.1rem;
+}
+
+.prose h2 {
+  margin-top: 2.5rem;
+  font-size: clamp(1.3rem, 2.2vw, 1.65rem);
+}
+
+.prose h3 {
+  margin-top: 1.9rem;
+  font-size: 1.08rem;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.prose li::marker {
+  color: var(--gold-ink);
+}
+
+.prose a {
+  color: var(--link);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.prose th,
+.prose td {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  background-color: var(--surface-sunken);
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+.prose td {
+  color: var(--text-muted);
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background-color: var(--code-bg);
+  color: var(--code-ink);
+}
+
+.prose blockquote {
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--gold-rule);
+  color: var(--text-muted);
+}
+
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+/* 10. Utilities, motion, responsive ======================================== */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 40;
+  max-width: calc(100vw - 2rem);
+  padding: 0.75rem 1.1rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--skip-bg);
+  color: var(--skip-ink);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s var(--ease);
+}
+
+.skip-link:focus {
+  top: 1rem;
+  color: var(--skip-ink);
+}
+
+.rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Anchor navigation is deliberately instant: a smooth-scroll animation can be
+     throttled or dropped by some renderers, which would leave a section link
+     looking broken. Only decorative motion is animated below. */
+  .hero__text > *,
+  .hero__visual {
+    animation: rise 0.7s var(--ease) both;
+  }
+
+  .hero__text > *:nth-child(2) {
+    animation-delay: 0.06s;
+  }
+
+  .hero__text > *:nth-child(3) {
+    animation-delay: 0.12s;
+  }
+
+  .hero__text > *:nth-child(4) {
+    animation-delay: 0.18s;
+  }
+
+  .hero__text > *:nth-child(5) {
+    animation-delay: 0.24s;
+  }
+
+  .hero__visual {
+    animation-delay: 0.15s;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .card--hover:hover,
+  .btn:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 60rem) {
+  .hero__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* On narrow screens the words come first: the download button has to be
+     visible without scrolling, the icon panel follows it. */
+  .hero {
+    padding-block: clamp(1.75rem, 5vw, 3rem) clamp(2rem, 6vw, 3.5rem);
+  }
+
+  .hero__visual {
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .hero__icon-group {
+    gap: 0.85rem;
+  }
+
+  .download-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The header switches to the disclosure menu below 64rem rather than 55rem:
+   navigation, download button and theme switcher need the extra room, and a
+   wrapped header row looks broken rather than responsive. */
+@media (max-width: 64rem) {
+  .site-nav,
+  .site-header__cta,
+  .theme-switch--compact {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+}
+
+@media (min-width: 64.0625rem) {
+  .nav-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 30rem) {
+  .hero__facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  /* A nowrap header would push the column past the screen and turn a short
+     two-word heading into a horizontal scroll. */
+  table.tech th {
+    white-space: normal;
+  }
+}
+
+/* Touch input, and every narrow screen: text links in the footer are the
+   smallest targets on the page, so they get a full-height row where a finger,
+   not a cursor, is used. Keyed on width as well, because a phone can report a
+   fine pointer (stylus, mouse connected) and still be used by touch. */
+@media (pointer: coarse), (max-width: 64rem) {
+  .site-footer ul {
+    gap: 0.25rem;
+  }
+
+  .site-footer a {
+    min-height: 2.75rem;
+  }
+
+  .footer-attributions a {
+    min-height: 2rem;
+  }
+}

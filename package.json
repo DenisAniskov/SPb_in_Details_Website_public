@@ -1,0 +1,30 @@
+{
+  "name": "spb-in-details-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Официальный сайт Android-приложения «Петербург в деталях»",
+  "license": "MIT",
+  "author": "Денис Аниськов",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build && node scripts/postbuild-check.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "verify:metadata": "node scripts/verify-release-metadata.mjs",
+    "verify:dist": "node scripts/postbuild-check.mjs",
+    "verify": "npm run check && npm run verify:metadata && npm run build"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.11",
+    "typescript": "^6.0.3"
+  }
+}
