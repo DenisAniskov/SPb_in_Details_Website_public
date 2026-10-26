@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { release } from '../lib/site';
+
+const mediaRepo = 'https://github.com/DenisAniskov/SPb_in_Details_Media_public';
+const file = (path: string) => mediaRepo + '/blob/main/' + path;
+
+const title = 'Для СМИ и партнёров — ' + release.appName;
+const description =
+  'Официальные рекламные видео, пресс-кит, буклет, презентация и паспорта проекта «Петербург в деталях».';
+
+const videos = [
+  {
+    title: 'Горизонтальное видео',
+    format: '16:9 · 1920 × 1080 · 38 секунд',
+    summary: 'Ролик для публикаций, показов и презентаций.',
+    mp4: file('videos/horizontal/promo_1920x1080_v1.0.mp4'),
+    captions: file('videos/horizontal/subtitles_ru.srt'),
+    cover: file('videos/horizontal/poster.png'),
+  },
+  {
+    title: 'Вертикальное видео',
+    format: '9:16 · 720 × 1280 · 38 секунд',
+    summary: 'Короткий ролик для мобильных и социальных платформ.',
+    mp4: file('videos/vertical/promo_720x1280_v1.0.mp4'),
+    captions: file('videos/vertical/subtitles_ru.srt'),
+    cover: file('videos/vertical/cover.png'),
+  },
+];
+
+const materials = [
+  {
+    title: 'Пресс-кит',
+    format: 'ZIP',
+    summary: 'Пресс-релиз, факт-лист, тексты и медиаматериалы.',
+    link: file('press/press_kit_v1.0.zip'),
+  },
+  {
+    title: 'Презентация приложения',
+    format: 'PDF',
+    summary: 'Идея, основные возможности и технологии.',
+    link: file('presentation/app_presentation.pdf'),
+  },
+  {
+    title: 'Маркетинговый буклет',
+    format: 'PDF',
+    summary: 'Двусторонний буклет A4 для печати и рассылки.',
+    link: file('print/marketing_brochure.pdf'),
+  },
+  {
+    title: 'Технический паспорт',
+    format: 'Markdown',
+    summary: 'Архитектура, технические решения и ограничения.',
+    link: file('documents/technical_passport.md'),
+  },
+  {
+    title: 'Маркетинговый паспорт',
+    format: 'Markdown',
+    summary: 'Позиционирование и рекомендации по коммуникации.',
+    link: file('documents/marketing_passport.md'),
+  },
+  {
+    title: 'Фирменные материалы',
+    format: 'PNG',
+    summary: 'Баннер, превью иконки и QR-код релиза.',
+    link: mediaRepo + '/tree/main/brand',
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="page-head">
+    <div class="container">
+      <p class="eyebrow">Медиаматериалы</p>
+      <h1>Для СМИ и партнёров</h1>
+      <p class="lead">
+        Рекламные видео, документы и материалы о приложении «Петербург в деталях» —
+        в официальном открытом медиакаталоге.
+      </p>
+      <p class="doc-meta">
+        <span>Медиапакет v1.0 · Android {release.version}</span>
+        <span>Источник: <a href={mediaRepo} rel="noopener noreferrer">GitHub Media</a></span>
+      </p>
+    </div>
+  </div>
+
+  <section class="section" aria-labelledby="video-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">Видеоматериалы</p>
+        <h2 id="video-title">Рекламные ролики</h2>
+        <p class="lead">
+          Две версии с оригинальной анимацией и звуком. Это иллюстративные ролики,
+          а не записи интерфейса приложения версии {release.version}.
+        </p>
+      </div>
+      <div class="grid grid--two">
+        {
+          videos.map((video) => (
+            <article class="card stack">
+              <span class="card__icon"><Icon name="download" size={22} /></span>
+              <h3>{video.title}</h3>
+              <p class="badge badge--gold">{video.format}</p>
+              <p>{video.summary}</p>
+              <p>
+                <a class="btn btn--secondary" href={video.mp4} rel="noopener noreferrer">
+                  Открыть MP4 <Icon name="external" size={16} />
+                </a>
+              </p>
+              <p class="small">
+                <a href={video.captions} rel="noopener noreferrer">Субтитры SRT</a>
+                {' · '}
+                <a href={video.cover} rel="noopener noreferrer">Обложка</a>
+              </p>
+            </article>
+          ))
+        }
+      </div>
+      <p class="small muted">
+        Видео и обложки не загружаются автоматически: переход на GitHub выполняется
+        только по нажатию ссылки. Здесь нет внешнего видеоплеера.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="files-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">Для публикаций</p>
+        <h2 id="files-title">Пресс-кит и документы</h2>
+        <p class="lead">Откройте материалы в официальном публичном репозитории.</p>
+      </div>
+      <div class="grid grid--two">
+        {
+          materials.map((item) => (
+            <article class="card stack">
+              <span class="card__icon"><Icon name="document" size={22} /></span>
+              <h3>{item.title}</h3>
+              <p class="small muted">{item.format}</p>
+              <p>{item.summary}</p>
+              <p>
+                <a class="link-inline" href={item.link} rel="noopener noreferrer">
+                  Открыть материал <Icon name="external" size={16} />
+                </a>
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="rights-title">
+    <div class="container">
+      <div class="section__head">
+        <p class="eyebrow">Условия использования</p>
+        <h2 id="rights-title">Авторские права и ограничения</h2>
+      </div>
+      <div class="notice">
+        <Icon name="alert" size={20} />
+        <p>
+          MIT-лицензия относится к оригинальному программному коду, но не передаёт автоматически
+          права на логотип, бренд, фотографии и чужие материалы. Перед использованием ознакомьтесь
+          с <a href={file('MEDIA_RIGHTS.md')} rel="noopener noreferrer">правилами медиапакета</a>.
+        </p>
+      </div>
+      <p>
+        Каталог содержит 180 редакционно отобранных мест. Архивные скриншоты сайта относятся
+        к версии 1.0.0+1 и не должны обозначаться как изображения версии {release.version}.
+        Ролики — стилизованная анимация, не запись экрана приложения.
+      </p>
+      <p>
+        <a class="btn btn--primary" href={mediaRepo} rel="noopener noreferrer">
+          Открыть полный медиакаталог <Icon name="external" size={16} />
+        </a>
+        {' '}
+        <a class="link-inline" href={release.urls.release} rel="noopener noreferrer">
+          Официальный релиз приложения <Icon name="external" size={14} />
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
