@@ -4,7 +4,7 @@ import Icon from '../components/Icon.astro';
 import { release } from '../lib/site';
 
 const mediaRepo = 'https://github.com/DenisAniskov/SPb_in_Details_Media_public';
-const file = (path: string) => mediaRepo + '/blob/main/' + path;
+const file = (path: string) => 'https://raw.githubusercontent.com/DenisAniskov/SPb_in_Details_Media_public/main/' + path;
 
 const title = 'Для СМИ и партнёров — ' + release.appName;
 const description =
@@ -13,52 +13,48 @@ const description =
 const videos = [
   {
     title: 'Горизонтальное видео',
-    format: '16:9 · 1920 × 1080 · 38 секунд',
+    format: '16:9 · 1920 × 1080',
     summary: 'Ролик для публикаций, показов и презентаций.',
-    mp4: file('videos/horizontal/promo_1920x1080_v1.0.mp4'),
-    captions: file('videos/horizontal/subtitles_ru.srt'),
-    cover: file('videos/horizontal/poster.png'),
+    mp4: file('videos/horizontal/promo_1920x1080_FINAL_v1.5.mp4'),
   },
   {
     title: 'Вертикальное видео',
-    format: '9:16 · 720 × 1280 · 38 секунд',
+    format: '9:16 · 1080 × 1920',
     summary: 'Короткий ролик для мобильных и социальных платформ.',
-    mp4: file('videos/vertical/promo_720x1280_v1.0.mp4'),
-    captions: file('videos/vertical/subtitles_ru.srt'),
-    cover: file('videos/vertical/cover.png'),
+    mp4: file('videos/vertical/promo_1080x1920_FINAL_v1.1.mp4'),
   },
 ];
 
 const materials = [
   {
-    title: 'Пресс-кит',
-    format: 'ZIP',
-    summary: 'Пресс-релиз, факт-лист, тексты и медиаматериалы.',
-    link: file('press/press_kit_v1.0.zip'),
+    title: 'Пресс-релиз FINAL v1.1',
+    format: 'PDF',
+    summary: 'Официальный пресс-релиз проекта.',
+    link: file('press/press_release_FINAL_v1.1.pdf'),
   },
   {
     title: 'Презентация приложения',
     format: 'PDF',
     summary: 'Идея, основные возможности и технологии.',
-    link: file('presentation/app_presentation.pdf'),
+    link: file('presentation/app_presentation_FINAL_v1.1.pdf'),
   },
   {
     title: 'Маркетинговый буклет',
     format: 'PDF',
     summary: 'Двусторонний буклет A4 для печати и рассылки.',
-    link: file('print/marketing_brochure.pdf'),
+    link: file('print/marketing_brochure_FINAL_v1.2.pdf'),
   },
   {
     title: 'Технический паспорт',
-    format: 'Markdown',
+    format: 'PDF',
     summary: 'Архитектура, технические решения и ограничения.',
-    link: file('documents/technical_passport.md'),
+    link: file('documents/technical_passport_FINAL_v1.1.pdf'),
   },
   {
     title: 'Маркетинговый паспорт',
-    format: 'Markdown',
+    format: 'PDF',
     summary: 'Позиционирование и рекомендации по коммуникации.',
-    link: file('documents/marketing_passport.md'),
+    link: file('documents/marketing_passport_FINAL_v1.1.pdf'),
   },
   {
     title: 'Фирменные материалы',
@@ -66,6 +62,16 @@ const materials = [
     summary: 'Баннер, превью иконки и QR-код релиза.',
     link: mediaRepo + '/tree/main/brand',
   },
+  { title: 'SPb_in_Details_App_Presentation_FINAL_v1.1.pptx', format: 'PPTX', summary: 'Утверждённый оригинал FINAL.', link: file('presentation/app_presentation_FINAL_v1.1.pptx') },
+  { title: 'Буклет_сторона_A_FINAL_v1.2.jpg', format: 'JPG', summary: 'Утверждённый оригинал FINAL.', link: file('print/brochure_side_A_FINAL_v1.2.jpg') },
+  { title: 'Буклет_сторона_B_FINAL_v1.2.jpg', format: 'JPG', summary: 'Утверждённый оригинал FINAL.', link: file('print/brochure_side_B_FINAL_v1.2.jpg') },
+  { title: 'Превью_обеих_сторон_FINAL_v1.2.jpg', format: 'JPG', summary: 'Утверждённый оригинал FINAL.', link: file('print/brochure_preview_FINAL_v1.2.jpg') },
+  { title: 'Инструкция_по_печати_и_сгибу_FINAL_v1.2.pdf', format: 'PDF', summary: 'Утверждённый оригинал FINAL.', link: file('print/brochure_print_guide_FINAL_v1.2.pdf') },
+  { title: 'SPb_in_Details_Technical_Passport_FINAL_v1.1.docx', format: 'DOCX', summary: 'Утверждённый оригинал FINAL.', link: file('documents/technical_passport_FINAL_v1.1.docx') },
+  { title: 'SPb_in_Details_Marketing_Passport_FINAL_v1.1.docx', format: 'DOCX', summary: 'Утверждённый оригинал FINAL.', link: file('documents/marketing_passport_FINAL_v1.1.docx') },
+  { title: 'SPb_in_Details_Press_Fact_Sheet_FINAL_v1.2.pdf', format: 'PDF', summary: 'Утверждённый оригинал FINAL.', link: file('press/fact_sheet_FINAL_v1.2.pdf') },
+  { title: 'SPb_in_Details_Press_Fact_Sheet_FINAL_v1.2.docx', format: 'DOCX', summary: 'Утверждённый оригинал FINAL.', link: file('press/fact_sheet_FINAL_v1.2.docx') },
+  { title: 'SPb_in_Details_Press_Release_FINAL_v1.1.docx', format: 'DOCX', summary: 'Утверждённый оригинал FINAL.', link: file('press/press_release_FINAL_v1.1.docx') },
 ];
 ---
 
@@ -79,7 +85,7 @@ const materials = [
         в официальном открытом медиакаталоге.
       </p>
       <p class="doc-meta">
-        <span>Медиапакет v1.0 · Android {release.version}</span>
+        <span>Медиапакет FINAL · Android {release.version}</span>
         <span>Источник: <a href={mediaRepo} rel="noopener noreferrer">GitHub Media</a></span>
       </p>
     </div>
@@ -108,17 +114,13 @@ const materials = [
                   Открыть MP4 <Icon name="external" size={16} />
                 </a>
               </p>
-              <p class="small">
-                <a href={video.captions} rel="noopener noreferrer">Субтитры SRT</a>
-                {' · '}
-                <a href={video.cover} rel="noopener noreferrer">Обложка</a>
-              </p>
+
             </article>
           ))
         }
       </div>
       <p class="small muted">
-        Видео и обложки не загружаются автоматически: переход на GitHub выполняется
+        Видео не загружаются автоматически: переход на GitHub выполняется
         только по нажатию ссылки. Здесь нет внешнего видеоплеера.
       </p>
     </div>
